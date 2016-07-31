@@ -13,13 +13,15 @@ public class CounterBuilder {
 
     public CounterBuilder(Integer counterType, String nodesGet){
         this.counterType = counterType;
+        //String
         if(counterType==0) {
             String[] vals = nodesGet.split(",");
             def = vals[0];
             for (int i = 1; i < vals.length; i++) {
                 nodes.add(vals[i]);
             }
-        }
+        }else
+        //Integer
         if(counterType==1){
             String[] temp = nodesGet.split(",");
             def = temp[0];

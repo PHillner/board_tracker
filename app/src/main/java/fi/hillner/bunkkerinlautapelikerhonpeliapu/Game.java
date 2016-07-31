@@ -1,6 +1,13 @@
 package fi.hillner.bunkkerinlautapelikerhonpeliapu;
 
+import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -9,13 +16,30 @@ import java.util.ArrayList;
  */
 public class Game{
     private String name;
+
+    //ArrayList<Pair<String label, CounterBuilder values>>
     private ArrayList<Pair<String,CounterBuilder>> trackers = new ArrayList<>();
 
-    public Game(String in) {
+    private static MainActivity activity;
+    private static Context context;
+
+    private ArrayList<LinearLayout> linList;
+    private LinearLayout lin;
+    private ArrayList<Button> buttonsP;
+    private ArrayList<Button> buttonsM;
+    private ArrayList<TextView> trackVal;
+
+    ArrayList<Pair<String, CounterBuilder>> list = null;
+
+    public Game(String in, MainActivity activity) {
+        this.activity = activity;
+        this.context = activity.getApplicationContext();
+
         String[] temp = in.split(";");
         name = temp[0];
-        for(int i=1;i<temp.length;i++)
+        for(int i=1;i<temp.length;i++) {
             handleValues(temp[i]);
+        }
         if(temp.length<=1){
             trackers.add(new Pair<String, CounterBuilder>(null,null));
             //System.out.println("Empty tracker made");
@@ -46,5 +70,125 @@ public class Game{
 
     public ArrayList<Pair<String,CounterBuilder>> getList() {
         return trackers;
+    }
+
+    public ArrayList<LinearLayout> getRows(){
+        buildRows();
+        return linList;
+    }
+
+    private void buildRows(){
+        buttonsP = new ArrayList<>();
+        buttonsM = new ArrayList<>();
+        trackVal = new ArrayList<>();
+
+        linList = new ArrayList<>();
+        System.out.println("Creating trackers...");
+        list = trackers;
+        //System.out.println("Tracker list size: "+list.size()); //debug
+        for (int cTrack = 0; cTrack<list.size();cTrack++) {
+            try {
+                lin = new LinearLayout(context);
+                lin.setOrientation(LinearLayout.HORIZONTAL);
+                //System.out.println("Setting tracker " + (cTrack+1)); //debug
+
+                TextView text = new TextView(context);
+                text.setText(list.get(cTrack).first);
+                //text.setTextColor(activity.getResources().getColor(R.color.colorPrimaryDark)); //not working :<
+                text.setTextSize(18);
+                text.setWidth(250);
+                text.setPadding(25, 0, 0, 0);
+                lin.addView(text);
+
+                Button btnMin = new Button(context);
+                btnMin.setText("-");
+                btnMin.setTextSize(18);
+                btnMin.setMaxWidth(50);
+                btnMin.setOnClickListener(new ButtonPressedListener());
+                buttonsM.add(btnMin);
+                lin.addView(btnMin);
+
+                TextView value = new TextView(context);
+                value.setText(list.get(cTrack).second.getDefault());
+                //value.setTextColor(activity.getResources().getColor(R.color.colorPrimaryDark)); //not working :<
+                value.setTextSize(18);
+                value.setWidth(200);
+                value.setPadding(25, 0, 0, 0);
+                trackVal.add(value);
+                lin.addView(value);
+
+                Button btnPl = new Button(context);
+                btnPl.setText("+");
+                btnPl.setTextSize(18);
+                btnPl.setMaxWidth(50);
+                btnPl.setOnClickListener(new ButtonPressedListener());
+                buttonsP.add(btnPl);
+                lin.addView(btnPl);
+
+                linList.add(lin);
+                //System.out.println("Tracker " + (cTrack+1) + " set up with size " + list.get(cTrack).second.getCounterValues().size()); //debug
+            }
+            catch(NullPointerException n){
+
+            }
+        }
+        System.out.println("Trackers created");
+    }
+
+    public class ButtonPressedListener implements AdapterView.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if(buttonsM.contains(v)) {
+                int k = buttonsM.indexOf(v);
+                for(int g=0;g<buttonsM.size();g++){
+                }
+                try {
+                    //String
+                    if(list.get(k).second.getCounterType()==0) {
+                        int j = list.get(k).second.getCounterValues().indexOf(trackVal.get(k).getText());
+                        trackVal.get(k).setText(list.get(k).second.getCounterValues().get(j-1).toString());
+                    }
+                    else //Integer
+                    if(list.get(k).second.getCounterType()==1) {
+                        int calc = Integer.parseInt(trackVal.get(k).getText().toString()) -1;
+                        int min = (Integer) list.get(k).second.getCounterValues().get(1);
+                        if(calc<min){
+                            throw new Exception();
+                        }
+                        else trackVal.get(k).setText(String.valueOf(calc));
+                    }
+                } catch (IndexOutOfBoundsException n) {
+                    Log.i("test", "Could not subtract from "+list.get(k).first+". "+n);
+                } catch (Exception e){
+                    Log.i("test", "Could not subtract from "+list.get(k).first+". "+e);
+                }
+            }
+            else{
+                int k = buttonsP.indexOf(v);
+                try{
+                    //String
+                    if(list.get(k).second.getCounterType()==0) {
+                        int j = list.get(k).second.getCounterValues().indexOf(trackVal.get(k).getText());
+                        trackVal.get(k).setText(list.get(k).second.getCounterValues().get(j+1).toString());
+                    }
+                    else //Integer
+                    if(list.get(k).second.getCounterType()==1) {
+                        int calc = Integer.parseInt(trackVal.get(k).getText().toString()) +1;
+                        int max = (Integer) list.get(k).second.getCounterValues().get(2);
+                        if(calc>max){
+                            throw new Exception();
+                        }
+                        else trackVal.get(k).setText(String.valueOf(calc));
+                    }
+                }
+                catch(IndexOutOfBoundsException n){
+                    Log.i("test", "Could not add to "+list.get(k).first+". "+n);
+                } catch (Exception e){
+                    Log.i("test", "Could not add to "+list.get(k).first+". "+e);
+                }
+            }
+
+        }
     }
 }
