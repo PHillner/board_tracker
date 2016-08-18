@@ -11,26 +11,20 @@ import java.util.ArrayList;
  */
 public class Games {
 
-    private static Games instance;
+    private ArrayList<Game> gamesList;
+    private ArrayList<String> gameNames;
+    private boolean hasRemovedFirst;
 
-    private ArrayList<Game> gamesList = new ArrayList<>();
-    private ArrayList<String> gameNames = new ArrayList<>();
-    private boolean hasRemovedFirst = false;
-
-    private Games() {
-
-    }
-
-    public static Games getInstance() {
-        if(instance == null) {
-            instance = new Games();
-        }
-        return instance;
+    public Games() {
+        gamesList = new ArrayList<>();
+        gameNames = new ArrayList<>();
+        hasRemovedFirst = false;
     }
 
     public void addGames(ArrayList<Game> gamesList, ArrayList<String> gameNames) {
         this.gamesList = gamesList;
         this.gameNames = gameNames;
+        //removeInit();
     }
 
     public ArrayList<Game> getGamesList(){
@@ -41,7 +35,7 @@ public class Games {
         return gameNames;
     }
 
-    public void removeInit(){
+    private void removeInit(){
         if(hasRemovedFirst==false){
             gamesList.remove(0);
             gameNames.remove(0);

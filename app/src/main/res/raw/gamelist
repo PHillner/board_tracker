@@ -6,4 +6,4 @@ Munchkins;Level'1"1,1,20;Power'1"1,1,40
 Poo;poo'1"0,0,15
 Samurai Sword;Resilience'1"4,0,5;Honor'1"4,0,10
 Sentinels of the Multiverse;Health'1"28,0,300;DR'1"0,-20,20;Dmg+'1"0,-20,20
-Test;int'1"3,-2,7;string'0"2,0,1,2,3,4,5;milk'0"1,0.2,0.5,1,1.5,1.75,2;juice'0"apple,apple,orange,pineapple,strawberry,pear;veggies'0"potato,carrots,onion,garlic;int'1"3,-2,7;string'0"2,0,1,2,3,4,5;milk'0"2,1,2,3,4;juice'0"apple,apple,orange,pineapple,strawberry,pear;veggies'0"potato,carrots,onion,garlic
+Test;11int'1"3,-2,7;01juice'0"apple,apple,orange,pineapple,strawberry,pear;01string'0"2,0,1,2,3,4,5;01milk'0"1,0.2,0.5,1,1.5,1.75,2;01veggies'0"potato,carrots,potato,onion,garlic;12int'1"3,-2,7;02string'0"2,0,1,2,3,4,5;02milk'0"2,1,2,3,4;02juice'0"apple,apple,orange,pineapple,strawberry,pear;02veggies'0"potato,carrots,onion,garlic
