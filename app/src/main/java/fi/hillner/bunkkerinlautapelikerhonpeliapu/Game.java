@@ -19,6 +19,8 @@ import java.util.ArrayList;
 public class Game{
     private String name;
 
+    private static final String TAG = "Game";
+
     //ArrayList<Pair<String label, Counter values>>
     private ArrayList<Pair<String,Counter>> trackers = new ArrayList<>();
 
@@ -44,9 +46,9 @@ public class Game{
         }
         if(temp.length<=1){
             trackers.add(new Pair<String, Counter>(null,null));
-            //System.out.println("Empty tracker made");
+            //Log.d(TAG, "Empty tracker made");
         }
-        System.out.println("num trackers made: "+trackers.size()); //debug
+        Log.d(TAG, "Number of trackers made: "+trackers.size()); //debug
     }
 
     public String getName() {
@@ -55,19 +57,19 @@ public class Game{
 
     private void handleValues(String values){
         String[] temp = values.split("'");
-        //System.out.println("handleValues, temp size: "+temp.length+": ["+temp[0]+"] "+temp[1]);
+        //Log.d(TAG, "handleValues, temp size: "+temp.length+": ["+temp[0]+"] "+temp[1]);
         String[] temp2 = temp[1].split("\"");
-        //System.out.println("handleValues, temp2 size: "+temp2.length+": ["+temp2[0]+"] "+temp2[1]);
+        //Log.d(TAG, "handleValues, temp2 size: "+temp2.length+": ["+temp2[0]+"] "+temp2[1]);
         try {
             Integer counterType = Integer.parseInt(temp2[0]);
             Counter counter = new Counter(counterType, temp2[1]);
-            //System.out.println("Counter, intPrefs size: "+counter.getCounterValues().size());
-            //System.out.println("Counter, intPrefs content: "+counter.getCounterValues().toString());
+            //Log.d(TAG, "Counter, intPrefs size: "+counter.getCounterValues().size());
+            //Log.d(TAG, "Counter, intPrefs content: "+counter.getCounterValues().toString());
             trackers.add(new Pair<String, Counter>(temp[0], counter));
         }
         catch(Exception p){
-            System.out.println("Parse exception at tracker creation.");
-            System.err.println(p);
+            Log.e(TAG, "Parse exception at tracker creation.");
+            Log.e(TAG, ""+p);
         }
     }
 
@@ -86,9 +88,9 @@ public class Game{
         trackVal = new ArrayList<>();
 
         linList = new ArrayList<>();
-        System.out.println("Creating trackers...");
+        Log.d(TAG, "Creating trackers...");
         list = trackers;
-        //System.out.println("Tracker list size: "+list.size()); //debug
+        //Log.d(TAG, "Tracker list size: "+list.size()); //debug
         for (int cTrack = 0; cTrack<list.size();cTrack++) {
             try {
 
@@ -110,13 +112,13 @@ public class Game{
                 btnPl.setOnClickListener(new ButtonPressedListener());
 
                 linList.add(lin);
-                //System.out.println("Tracker " + (cTrack+1) + " set up with size " + list.get(cTrack).second.getCounterValues().size()); //debug
+                //Log.d(TAG, "Tracker " + (cTrack+1) + " set up with size " + list.get(cTrack).second.getCounterValues().size()); //debug
             }
             catch(NullPointerException n){
 
             }
         }
-        System.out.println("Trackers created");
+        Log.d(TAG, "Trackers created");
     }
 
     public class ButtonPressedListener implements AdapterView.OnClickListener {
@@ -125,16 +127,10 @@ public class Game{
         public void onClick(View v) {
             if(buttonsM.contains(v)) {
                 int k = buttonsM.indexOf(v);
-                System.out.println("button row index: "+k);
-                System.out.println("selected value index: "+list.get(k).second.getSelectedIndex());
-                System.out.println("counter type: "+list.get(k).second.getCounterType());
-                System.out.println("list size: "+list.size());
-                System.out.println("counterValue size: "+list.get(k).second.getCounterValues().size());
                 try {
                     //String
                     if(list.get(k).second.getCounterType()==0) {
                         int j = list.get(k).second.setSelectedIndex(list.get(k).second.getSelectedIndex()-1);
-                        System.out.println("new selected index: "+j);
                         trackVal.get(k).setText(list.get(k).second.getCounterValues().get(j).toString());
                     }
                     else //Integer
@@ -147,18 +143,13 @@ public class Game{
                         else trackVal.get(k).setText(String.valueOf(calc));
                     }
                 } catch (IndexOutOfBoundsException n) {
-                    Log.i("err", "Could not subtract from "+list.get(k).first+". "+n);
+                    Log.e(TAG, "Could not subtract from "+list.get(k).first+". "+n);
                 } catch (Exception e){
-                    Log.i("err", "Could not subtract from "+list.get(k).first+". "+e);
+                    Log.e(TAG, "Could not subtract from "+list.get(k).first+". "+e);
                 }
             }
             else if(buttonsP.contains(v)){
                 int k = buttonsP.indexOf(v);
-                System.out.println("button row index: "+k);
-                System.out.println("selected value index: "+list.get(k).second.getSelectedIndex());
-                System.out.println("counter type: "+list.get(k).second.getCounterType());
-                System.out.println("list size: "+list.size());
-                System.out.println("counterValue size: "+list.get(k).second.getCounterValues().size());
                 try{
                     //String
                     if(list.get(k).second.getCounterType()==0) {
@@ -176,9 +167,9 @@ public class Game{
                     }
                 }
                 catch(IndexOutOfBoundsException n){
-                    Log.i("err", "Could not add to "+list.get(k).first+". "+n);
+                    Log.e(TAG, "Could not add to "+list.get(k).first+". "+n);
                 } catch (Exception e){
-                    Log.i("err", "Could not add to "+list.get(k).first+". "+e);
+                    Log.e(TAG, "Could not add to "+list.get(k).first+". "+e);
                 }
             }
         }

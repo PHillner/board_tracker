@@ -1,5 +1,7 @@
 package fi.hillner.bunkkerinlautapelikerhonpeliapu;
 
+import android.util.Log;
+
 import java.util.LinkedList;
 
 /**
@@ -11,6 +13,8 @@ public class Counter {
     private LinkedList<Integer> intPrefs = new LinkedList<>();  //[default, min, max]
     private int counterType;
     private int selectedIndex;
+
+    private static final String TAG = "Counter";
 
     public Counter(Integer counterType, String nodesGet){
         this.counterType = counterType;
@@ -64,7 +68,7 @@ public class Counter {
         if(0<=i && i<nodes.size()){ // (min < i && i < max)
             selectedIndex = i;
         }
-        System.out.println("setSelectedIndex: "+selectedIndex);
+        Log.d(TAG, "setSelectedIndex: "+selectedIndex);       //debug
         return selectedIndex;
     }
 

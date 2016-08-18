@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private appView appV;
     private MainActivity activity;
     Games games;
+
+    private static final String TAG = "MainActivity";
 
     private LinearLayout linLayout;
     private static Context context;
@@ -50,14 +53,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getGames(){
+        Log.i(TAG, "Application started");
         try {
             new Thread(new Runnable(){
                 public void run() {
                     Looper.prepare();
-                        System.out.println("Loading games");         //debug
+                    Log.i(TAG, "Loading games");         //debug
                     try{
                         output = LoadFile("gamelist");
-                        //Log.i("test", output);        //debug
+                        //Log.d(TAG, output);        //debug
                     }
                     catch(IOException e){
                         Toast toast = Toast.makeText(getApplicationContext(), "File: not found", Toast.LENGTH_LONG);
@@ -71,16 +75,16 @@ public class MainActivity extends AppCompatActivity {
                         String line;
 
                         while ((line = br.readLine()) != null) {
-                            System.out.println("Adding new game"); //debug
+                            Log.d(TAG, "Adding new game"); //debug
 
                             Game game = new Game(line, activity);
                             gamesList.add(game);
                             gameNames.add(game.getName());
-                            System.out.println("Game added: '"+game.getName()+"'"); //debug
+                            Log.d(TAG, "Game added: '"+game.getName()+"'"); //debug
                         }
                         games = new Games();
                         games.addGames(gamesList,gameNames);
-                        System.out.println("Number of games loaded: "+games.getGamesList().size());
+                        Log.i(TAG, "Number of games loaded: "+games.getGamesList().size());
                         setSpinner();
                     }
                     catch(IOException ex){System.out.println("buff, "+ex);}
@@ -119,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setSpinner(){
         try {
-            System.out.println("Setting spinner");
+            Log.i(TAG, "Setting spinner");
             spinner = (Spinner) activity.findViewById(R.id.spinner);
 
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(activity,
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             spinner.setAdapter(dataAdapter);
             spinner.setPrompt("Choose a game");
             spinner.setOnItemSelectedListener(new MyOnItemSelectedListener());
-            System.out.println("Spinner set");
+            Log.i(TAG, "Spinner set");
         }
         catch(Exception ex){System.out.println("Spinner exception:\n"+ex);}
     }
@@ -144,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
             if(games.getGamesList().size()!=0 && !selectedItem.equals("Choose a game") && !selectedItem.equals(null)) {
 
                 if(selectedGame != null){
-                    Toast.makeText(parent.getContext(), "Avataan " + selectedItem,
+                    Toast.makeText(parent.getContext(), "Opening " + selectedItem,
                             Toast.LENGTH_SHORT).show();
                 }
                 selectedGame = selectedItem;
@@ -153,18 +157,17 @@ public class MainActivity extends AppCompatActivity {
                 buttonsM.clear();
                 trackVal.clear();
 
-                System.out.println("Opening '"+selectedItem+"'");
+                Log.i(TAG, "Opening '"+selectedItem+"'");
 
 
                 /*
-                //debug
-                System.out.println("***debug***");
-                System.out.println("selectedItem : "+selectedItem);
-                System.out.println("gameNames.indexOf(selectedItem) : "+gameNames.indexOf(selectedItem));
-                System.out.println("games.getGamesList().get(gameNames.indexOf(selectedItem)) : "+games.getGamesList().get(gameNames.indexOf(selectedItem)));
-                System.out.println("Num rows: "+games.getGamesList().get(gameNames.indexOf(selectedItem)).getList().size());
-                System.out.println("appV.getRows(games.getGamesList().get(gameNames.indexOf(selectedItem))) : "+appV.getRows(games.getGamesList().get(gameNames.indexOf(selectedItem))));
-                System.out.println("***debug end***");
+                Log.d(TAG, "***debug***");
+                Log.d(TAG, "selectedItem : "+selectedItem);
+                Log.d(TAG, "gameNames.indexOf(selectedItem) : "+gameNames.indexOf(selectedItem));
+                Log.d(TAG, "games.getGamesList().get(gameNames.indexOf(selectedItem)) : "+games.getGamesList().get(gameNames.indexOf(selectedItem)));
+                Log.d(TAG, "Num rows: "+games.getGamesList().get(gameNames.indexOf(selectedItem)).getList().size());
+                Log.d(TAG, "appV.getRows(games.getGamesList().get(gameNames.indexOf(selectedItem))) : "+appV.getRows(games.getGamesList().get(gameNames.indexOf(selectedItem))));
+                Log.d(TAG, "***debug end***");
                 */
                 ArrayList<LinearLayout> temp = appV.getRows(games.getGamesList().get(gameNames.indexOf(selectedItem)));
                 for(int i=0;i<temp.size();i++){
