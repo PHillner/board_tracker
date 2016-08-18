@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lin"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/property_name"
+        android:layout_width="47pt"
+        android:layout_height="match_parent"
+        android:textColor="#bb000000"
+        android:textSize="8pt"
+        android:paddingLeft="2pt"
+        android:paddingTop="5pt"
+        />
+    <Button
+        android:id="@+id/btnMin"
+        android:layout_width="30pt"
+        android:layout_height="match_parent"
+        android:textSize="8pt"
+        android:textColor="#ffffffff"
+        android:text="-"
+        />
+    <EditText
+        android:id="@+id/property_value"
+        android:layout_width="40pt"
+        android:layout_height="match_parent"
+        android:textColor="#bb000000"
+        android:background="#00000000"
+        android:textSize="8pt"
+        android:paddingLeft="2pt"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+    <Button
+        android:id="@+id/btnPl"
+        android:layout_width="30pt"
+        android:layout_height="match_parent"
+        android:textSize="8pt"
+        android:textColor="#ffffffff"
+        android:text="+"
+        />
+
+</LinearLayout>

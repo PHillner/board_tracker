@@ -3,6 +3,7 @@ package fi.hillner.bunkkerinlautapelikerhonpeliapu;
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,8 +19,8 @@ import java.util.ArrayList;
 public class Game{
     private String name;
 
-    //ArrayList<Pair<String label, CounterBuilder values>>
-    private ArrayList<Pair<String,CounterBuilder>> trackers = new ArrayList<>();
+    //ArrayList<Pair<String label, Counter values>>
+    private ArrayList<Pair<String,Counter>> trackers = new ArrayList<>();
 
     private static MainActivity activity;
     private static Context context;
@@ -28,9 +29,9 @@ public class Game{
     private LinearLayout lin;
     private ArrayList<Button> buttonsP;
     private ArrayList<Button> buttonsM;
-    private ArrayList<TextView> trackVal;
+    private ArrayList<EditText> trackVal;
 
-    ArrayList<Pair<String, CounterBuilder>> list = null;
+    ArrayList<Pair<String, Counter>> list = null;
 
     public Game(String in, MainActivity activity) {
         this.activity = activity;
@@ -42,10 +43,10 @@ public class Game{
             handleValues(temp[i]);
         }
         if(temp.length<=1){
-            trackers.add(new Pair<String, CounterBuilder>(null,null));
+            trackers.add(new Pair<String, Counter>(null,null));
             //System.out.println("Empty tracker made");
         }
-        //System.out.println("num trackers made: "+trackers.size()); //debug
+        System.out.println("num trackers made: "+trackers.size()); //debug
     }
 
     public String getName() {
@@ -59,17 +60,18 @@ public class Game{
         //System.out.println("handleValues, temp2 size: "+temp2.length+": ["+temp2[0]+"] "+temp2[1]);
         try {
             Integer counterType = Integer.parseInt(temp2[0]);
-            CounterBuilder counter = new CounterBuilder(counterType, temp2[1]);
-            //System.out.println("CounterBuilder, intPrefs size: "+counter.getCounterValues().size());
-            //System.out.println("CounterBuilder, intPrefs content: "+counter.getCounterValues().toString());
-            trackers.add(new Pair<String, CounterBuilder>(temp[0], counter));
+            Counter counter = new Counter(counterType, temp2[1]);
+            //System.out.println("Counter, intPrefs size: "+counter.getCounterValues().size());
+            //System.out.println("Counter, intPrefs content: "+counter.getCounterValues().toString());
+            trackers.add(new Pair<String, Counter>(temp[0], counter));
         }
         catch(Exception p){
             System.out.println("Parse exception at tracker creation.");
+            System.err.println(p);
         }
     }
 
-    public ArrayList<Pair<String,CounterBuilder>> getList() {
+    public ArrayList<Pair<String,Counter>> getList() {
         return trackers;
     }
 
@@ -89,42 +91,23 @@ public class Game{
         //System.out.println("Tracker list size: "+list.size()); //debug
         for (int cTrack = 0; cTrack<list.size();cTrack++) {
             try {
-                lin = new LinearLayout(context);
-                lin.setOrientation(LinearLayout.HORIZONTAL);
-                //System.out.println("Setting tracker " + (cTrack+1)); //debug
 
-                TextView property_name = new TextView(context);
+                lin = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker, null);
+
+                TextView property_name = (TextView) lin.findViewById(R.id.property_name);
                 property_name.setText(list.get(cTrack).first);
-                property_name.setTextColor(0xcc000000);
-                property_name.setTextSize(18);
-                property_name.setWidth(250);
-                property_name.setPadding(25, 0, 0, 0);
-                lin.addView(property_name);
 
-                Button btnMin = new Button(context);
-                btnMin.setText("-");
-                btnMin.setTextSize(18);
-                btnMin.setMaxWidth(50);
-                btnMin.setOnClickListener(new ButtonPressedListener());
+                Button btnMin = (Button) lin.findViewById(R.id.btnMin);
                 buttonsM.add(btnMin);
-                lin.addView(btnMin);
+                btnMin.setOnClickListener(new ButtonPressedListener());
 
-                TextView property_value = new TextView(context);
+                EditText property_value = (EditText) lin.findViewById(R.id.property_value);
                 property_value.setText(list.get(cTrack).second.getDefault());
-                property_value.setTextColor(0xcc000000);
-                property_value.setTextSize(18);
-                property_value.setWidth(200);
-                property_value.setPadding(25, 0, 0, 0);
                 trackVal.add(property_value);
-                lin.addView(property_value);
 
-                Button btnPl = new Button(context);
-                btnPl.setText("+");
-                btnPl.setTextSize(18);
-                btnPl.setMaxWidth(50);
-                btnPl.setOnClickListener(new ButtonPressedListener());
+                Button btnPl = (Button) lin.findViewById(R.id.btnPl);
                 buttonsP.add(btnPl);
-                lin.addView(btnPl);
+                btnPl.setOnClickListener(new ButtonPressedListener());
 
                 linList.add(lin);
                 //System.out.println("Tracker " + (cTrack+1) + " set up with size " + list.get(cTrack).second.getCounterValues().size()); //debug
@@ -142,13 +125,17 @@ public class Game{
         public void onClick(View v) {
             if(buttonsM.contains(v)) {
                 int k = buttonsM.indexOf(v);
-                for(int g=0;g<buttonsM.size();g++){
-                }
+                System.out.println("button row index: "+k);
+                System.out.println("selected value index: "+list.get(k).second.getSelectedIndex());
+                System.out.println("counter type: "+list.get(k).second.getCounterType());
+                System.out.println("list size: "+list.size());
+                System.out.println("counterValue size: "+list.get(k).second.getCounterValues().size());
                 try {
                     //String
                     if(list.get(k).second.getCounterType()==0) {
-                        int j = list.get(k).second.getCounterValues().indexOf(trackVal.get(k).getText());
-                        trackVal.get(k).setText(list.get(k).second.getCounterValues().get(j-1).toString());
+                        int j = list.get(k).second.setSelectedIndex(list.get(k).second.getSelectedIndex()-1);
+                        System.out.println("new selected index: "+j);
+                        trackVal.get(k).setText(list.get(k).second.getCounterValues().get(j).toString());
                     }
                     else //Integer
                     if(list.get(k).second.getCounterType()==1) {
@@ -160,18 +147,23 @@ public class Game{
                         else trackVal.get(k).setText(String.valueOf(calc));
                     }
                 } catch (IndexOutOfBoundsException n) {
-                    Log.i("test", "Could not subtract from "+list.get(k).first+". "+n);
+                    Log.i("err", "Could not subtract from "+list.get(k).first+". "+n);
                 } catch (Exception e){
-                    Log.i("test", "Could not subtract from "+list.get(k).first+". "+e);
+                    Log.i("err", "Could not subtract from "+list.get(k).first+". "+e);
                 }
             }
             else if(buttonsP.contains(v)){
                 int k = buttonsP.indexOf(v);
+                System.out.println("button row index: "+k);
+                System.out.println("selected value index: "+list.get(k).second.getSelectedIndex());
+                System.out.println("counter type: "+list.get(k).second.getCounterType());
+                System.out.println("list size: "+list.size());
+                System.out.println("counterValue size: "+list.get(k).second.getCounterValues().size());
                 try{
                     //String
                     if(list.get(k).second.getCounterType()==0) {
-                        int j = list.get(k).second.getCounterValues().indexOf(trackVal.get(k).getText());
-                        trackVal.get(k).setText(list.get(k).second.getCounterValues().get(j+1).toString());
+                        int j = list.get(k).second.setSelectedIndex(list.get(k).second.getSelectedIndex()+1);
+                        trackVal.get(k).setText(list.get(k).second.getCounterValues().get(j).toString());
                     }
                     else //Integer
                     if(list.get(k).second.getCounterType()==1) {
@@ -184,9 +176,9 @@ public class Game{
                     }
                 }
                 catch(IndexOutOfBoundsException n){
-                    Log.i("test", "Could not add to "+list.get(k).first+". "+n);
+                    Log.i("err", "Could not add to "+list.get(k).first+". "+n);
                 } catch (Exception e){
-                    Log.i("test", "Could not add to "+list.get(k).first+". "+e);
+                    Log.i("err", "Could not add to "+list.get(k).first+". "+e);
                 }
             }
         }

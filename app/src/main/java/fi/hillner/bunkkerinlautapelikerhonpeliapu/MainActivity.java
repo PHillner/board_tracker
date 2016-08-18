@@ -1,14 +1,11 @@
 package fi.hillner.bunkkerinlautapelikerhonpeliapu;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Looper;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Button> buttonsP = new ArrayList<>();
     private ArrayList<Button> buttonsM = new ArrayList<>();
     private ArrayList<TextView> trackVal = new ArrayList<>();
-    ArrayList<Pair<String, CounterBuilder>> list = null;
+    ArrayList<Pair<String, Counter>> list = null;
 
     private RetainedFragment dataFragment;
     private FragmentManager fm;
@@ -115,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
                         String line;
 
                         while ((line = br.readLine()) != null) {
+                            System.out.println("Adding new game"); //debug
+
                             Game game = new Game(line, activity);
                             gamesList.add(game);
                             gameNames.add(game.getName());
