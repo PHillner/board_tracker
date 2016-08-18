@@ -6,6 +6,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -92,13 +93,13 @@ public class Game{
                 lin.setOrientation(LinearLayout.HORIZONTAL);
                 //System.out.println("Setting tracker " + (cTrack+1)); //debug
 
-                TextView text = new TextView(context);
-                text.setText(list.get(cTrack).first);
-                //text.setTextColor(activity.getResources().getColor(R.color.colorPrimaryDark)); //not working :<
-                text.setTextSize(18);
-                text.setWidth(250);
-                text.setPadding(25, 0, 0, 0);
-                lin.addView(text);
+                TextView property_name = new TextView(context);
+                property_name.setText(list.get(cTrack).first);
+                property_name.setTextColor(0xcc000000);
+                property_name.setTextSize(18);
+                property_name.setWidth(250);
+                property_name.setPadding(25, 0, 0, 0);
+                lin.addView(property_name);
 
                 Button btnMin = new Button(context);
                 btnMin.setText("-");
@@ -108,14 +109,14 @@ public class Game{
                 buttonsM.add(btnMin);
                 lin.addView(btnMin);
 
-                TextView value = new TextView(context);
-                value.setText(list.get(cTrack).second.getDefault());
-                //value.setTextColor(activity.getResources().getColor(R.color.colorPrimaryDark)); //not working :<
-                value.setTextSize(18);
-                value.setWidth(200);
-                value.setPadding(25, 0, 0, 0);
-                trackVal.add(value);
-                lin.addView(value);
+                TextView property_value = new TextView(context);
+                property_value.setText(list.get(cTrack).second.getDefault());
+                property_value.setTextColor(0xcc000000);
+                property_value.setTextSize(18);
+                property_value.setWidth(200);
+                property_value.setPadding(25, 0, 0, 0);
+                trackVal.add(property_value);
+                lin.addView(property_value);
 
                 Button btnPl = new Button(context);
                 btnPl.setText("+");
@@ -164,7 +165,7 @@ public class Game{
                     Log.i("test", "Could not subtract from "+list.get(k).first+". "+e);
                 }
             }
-            else{
+            else if(buttonsP.contains(v)){
                 int k = buttonsP.indexOf(v);
                 try{
                     //String
@@ -188,7 +189,6 @@ public class Game{
                     Log.i("test", "Could not add to "+list.get(k).first+". "+e);
                 }
             }
-
         }
     }
 }
