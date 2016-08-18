@@ -1,12 +1,9 @@
 package fi.hillner.bunkkerinlautapelikerhonpeliapu;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Looper;
-import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,10 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Button> buttonsP = new ArrayList<>();
     private ArrayList<Button> buttonsM = new ArrayList<>();
     private ArrayList<TextView> trackVal = new ArrayList<>();
-    ArrayList<Pair<String, Counter>> list = null;
-
-    private RetainedFragment dataFragment;
-    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,40 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
         getGames();
         appV = appView.getInstance(activity);
-
-        // find the retained fragment on activity restarts
-        fm = getFragmentManager();
-        dataFragment = (RetainedFragment) fm.findFragmentByTag("games");
-
-        // create the fragment and data the first time
-        if (dataFragment == null) {
-            // add the fragment
-            dataFragment = new RetainedFragment();
-            fm.beginTransaction().add(dataFragment, "games").commit();
-            // you can now load the data
-        }
-        // the data is available in dataFragment.getData()
-
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        saveView();
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        saveView();
-    }
-
-    private void saveView(){
-        String[] values = new String[trackVal.size()];
-        for(int i=0;i<trackVal.size();i++){
-            values[i] = trackVal.get(i).getText().toString();
-        }
-        dataFragment.setData(selectedGame, values);
     }
 
     private void getGames(){
@@ -98,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println("Loading games");         //debug
                     try{
                         output = LoadFile("gamelist");
-                        //Log.i("test", output);
+                        //Log.i("test", output);        //debug
                     }
                     catch(IOException e){
                         Toast toast = Toast.makeText(getApplicationContext(), "File: not found", Toast.LENGTH_LONG);
@@ -180,10 +139,6 @@ public class MainActivity extends AppCompatActivity {
             linLayout = (LinearLayout) findViewById(R.id.linLayout);
             linLayout.removeAllViewsInLayout();
 
-            if(selectedGame!=null) {
-                saveView();
-                fm.beginTransaction().addToBackStack("games").commit();
-            }
             String selectedItem = parent.getItemAtPosition(pos).toString();
             //System.out.println("nameslist: "+gameNames.size()+"\ngamelist: "+games.getGamesList().size()); //debug
             if(games.getGamesList().size()!=0 && !selectedItem.equals("Choose a game") && !selectedItem.equals(null)) {
@@ -216,50 +171,10 @@ public class MainActivity extends AppCompatActivity {
                     linLayout.addView(temp.get(i));
                 }
             }
-
-
-            dataFragment = new RetainedFragment();
-            fm.beginTransaction().add(dataFragment, "games").commit();
-            saveView();
         }
 
         public void onNothingSelected(AdapterView<?> parent) {
             // Do nothing.
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        dataFragment = (RetainedFragment) fm.findFragmentByTag("games");
-
-        if (dataFragment == null) {
-            // add the fragment
-            dataFragment = new RetainedFragment();
-            fm.beginTransaction().add(dataFragment, "games").commit();
-            // you can now load the data
-        }
-
-        String[] temp = dataFragment.getData();
-        int j;
-        for(j=0; j<gameNames.size();j++){
-            if(gameNames.get(j).equals(temp[0])) break;
-        }
-        if(j<gameNames.size()){
-            spinner.setSelection(j);
-            selectedGame = temp[j];
-        }
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            System.out.println("rotatiooooooon!!!");
-            //spinner.setSelection(gameNames.indexOf(selectedGame));
-            Toast.makeText(context, "landscape", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            System.out.println("rotatiooooooon!!!");
-            Toast.makeText(context, "portrait", Toast.LENGTH_SHORT).show();
-            //spinner.setSelection(gameNames.indexOf(selectedGame));
         }
     }
 }

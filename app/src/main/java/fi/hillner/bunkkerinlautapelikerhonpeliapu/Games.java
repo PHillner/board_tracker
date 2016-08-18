@@ -11,8 +11,6 @@ import java.util.ArrayList;
  */
 public class Games {
 
-    private static Games instance;
-
     private ArrayList<Game> gamesList;
     private ArrayList<String> gameNames;
     private boolean hasRemovedFirst;
